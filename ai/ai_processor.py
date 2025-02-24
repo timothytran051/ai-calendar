@@ -43,6 +43,10 @@ If an event spans multiple days, return it as:
 If there are no dates, but there is an event, then return it as:
 "Event Name: No Date Found"
 
+After listing all events, add a new line and return:
+- `"1 Homework Drop"` if an assignment is dropped.
+- `"No drops found"` if no such policy is mentioned in the syllabus.
+
 Make sure the class name is always mentioned at the top of the response in the format:
 "Class_Abbreviation Class_Number"
 """

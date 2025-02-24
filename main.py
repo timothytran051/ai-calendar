@@ -8,7 +8,7 @@ import sqlite3
 from openai import OpenAI
 from dotenv import load_dotenv, find_dotenv
 from ai.ai_processor import ask_ai
-from functions.func import extract_text
+from functions.func import extract_text, extract_events, extract_policies
 
 _ = load_dotenv(find_dotenv())
 # client = OpenAI(
@@ -41,11 +41,14 @@ fileName = "pdfs/1 CHECKLIST_PHIL 348 (SP2025).pdf"
 #             # print(text)
 #             # print("Exam found")
 
-pdf_text = " ".join(extract_text(fileName))
 # print(pdf_text)
+text = extract_text(fileName)
+events = extract_events(text)
+policies = extract_policies(text)
 
-response = ask_ai(pdf_text)
-print(response)
+print(policies)
+# response = ask_ai(policies)
+# print(response)
 
 
 
