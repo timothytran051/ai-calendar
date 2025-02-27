@@ -1,5 +1,6 @@
 import fitz
 import re
+from sqlite import sql_class#, sql_date, sql_policy
 
 date_pattern = r"""
             (?:\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,\s)? # Matches optional weekday (e.g., "Tuesday, ")
@@ -35,16 +36,19 @@ def extract_policies(text):
         
     return extracted_policies
 
-    # for page in doc:
-    #     text = page.get_text("text")
-    #     text_cleaned = text.replace("\n", " ").strip()
-        
-    #     if re.search(event_pattern, text_cleaned, re.IGNORECASE):
-    #         if re.search(date_pattern, text_cleaned, re.IGNORECASE | re.VERBOSE):
-    #             extracted_pages.append(text_cleaned)
-                
-    #     # if re.search(assignment_pattern):
-    #     #     extracted_pages.append(text_cleaned)
-            
-    # return extracted_pages
+def convert(text):
+    text_cleaned = text.strip()
+    sections = text_cleaned.split("\n")
+    class_name = sections[0].strip(' "“”')
+    dates = [event.strip(' "“”') for event in sections[1:-1] if event.strip()]
+    policy = sections[-1].strip(' "“”')
+    # sql_class(class_name)
+    
+    print(dates)
+    for date in dates:
+         dates_new = date.split(":")
 
+         print(dates_new[1].strip())
+    # sql_date(dates)
+    # sql_policy(policy)
+    

@@ -19,19 +19,22 @@ You should only respond to queries about events, schedules, availability, and re
 If the user asks for anything unrelated (e.g., jokes, facts, opinions), politely decline.
 
 You will receive full pages of text from a syllabus.
-Your task is to extract only dates associated with exams and quizzes while ignoring all other information, 
+Your task is to extract only dates associated with **exams, quizzes, and homework** while ignoring all other information, 
 such as topics, readings, and additional syllabus details.
 
+- **Extract quizzes, exams, and homework.**
+- **Ensure all events follow the same structured format.**
 - Only return event names if a date is found.
-- Ignore incomplete mentions of exams/quizzes without a date.
+- Ignore incomplete mentions of events without a date.
 - Ensure extracted dates are correct and formatted consistently.
 - If an event spans multiple days, always return the full date range.
 - Extract only the **class abbreviation and number** (e.g., "CS 331"), removing any extra terms like "Spring 2025."
-- Convert references to **Week X** into actual calendar dates based on the semester start date.
-- **Standardize event names to use "Exam 1", "Exam 2", etc., instead of "Midterm" and "Final."** Number exams in order of appearance in the syllabus.
-
-**Semester Start Date:** January 21, 2025  
-- Example: Week 1 should be translated to 1/21 - 1/29 with no year included
+- **DO NOT convert "Week X" into a calendar date. Return "Week X" exactly as written in the syllabus.**
+- **Standardize event names to use "Exam 1", "Exam 2", "Quiz 1", "Quiz 2", "Homework 1", "Homework 2", etc.** Number events in order of appearance in the syllabus.
+- Always list events in this order: Exams → Quizzes → Homework → Other Assignments → Drop Policy.
+- Do not reorder events differently between responses.
+- Only include homework assignments that have a date.
+- If a homework assignment has "No Date Found," exclude it from the response.
 
 Return your response in this structured format:
 "Class_Abbreviation Class_Number"
@@ -49,6 +52,7 @@ After listing all events, add a new line and return:
 
 Make sure the class name is always mentioned at the top of the response in the format:
 "Class_Abbreviation Class_Number"
+
 """
 
 def ask_ai(prompt):
