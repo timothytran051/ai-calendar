@@ -35,6 +35,10 @@ such as topics, readings, and additional syllabus details.
 - Do not reorder events differently between responses.
 - Only include homework assignments that have a date.
 - If a homework assignment has "No Date Found," exclude it from the response.
+- Make sure to include the year in the date, and return in this format:
+"YYYY-MM-DD"
+- If no year is found, return the current year
+- If there are two dates for an assignment, exam, quiz, etc., be sure to include BOTH dates
 
 Return your response in this structured format:
 "Class_Abbreviation Class_Number"

@@ -18,8 +18,8 @@ from functions.func import extract_text, extract_events, extract_policies, conve
 # model = "gpt-4o-mini"
 # fileName = "pdfs/KINE 404 Syllabus SPR25 2025-01-21 - Tagged.pdf"
 # fileName = "pdfs/CoursePolicies264.pdf"
-fileName = "pdfs/Spring 2025 CS 331 04 23988.pdf"
-# fileName = "pdfs/1 CHECKLIST_PHIL 348 (SP2025).pdf"
+# fileName = "pdfs/Spring 2025 CS 331 04 23988.pdf"
+fileName = "pdfs/1 CHECKLIST_PHIL 348 (SP2025).pdf"
 
 # print(pdf_text)
 text = extract_text(fileName)
@@ -39,7 +39,7 @@ response = ask_ai("\n".join(combined_output))
 print(response)
 
 # date_conversion(combined_output)
-convert(response)
+convert(response, combined_output)
 
 # question = input("Calendar: ")
 # response = ask_ai(question)

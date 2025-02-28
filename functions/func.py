@@ -1,6 +1,7 @@
 import fitz
 import re
-from sqlite import sql_class#, sql_date, sql_policy
+from datetime import datetime, timedelta
+from sqlite import sql_class, sql_date, get_class_id, sql_syllabus, sql_ai#, sql_policy
 
 date_pattern = r"""
             (?:\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,\s)? # Matches optional weekday (e.g., "Tuesday, ")
@@ -36,19 +37,62 @@ def extract_policies(text):
         
     return extracted_policies
 
-def convert(text):
+def convert(text, syllabus_text):
     text_cleaned = text.strip()
     sections = text_cleaned.split("\n")
     class_name = sections[0].strip(' "“”')
     dates = [event.strip(' "“”') for event in sections[1:-1] if event.strip()]
     policy = sections[-1].strip(' "“”')
-    # sql_class(class_name)
-    
-    print(dates)
+    sql_class(class_name)
+    class_id = get_class_id(class_name)
+    if class_id:
+        sql_syllabus(class_id, syllabus_text)
+        sql_ai(class_id, text)
+    else:
+        print(f"Class '{class_name}' not found in database.")
     for date in dates:
-         dates_new = date.split(":")
+        date_sections = date.split(":")
+        event_name = date_sections[0].strip()
+        event_date = date_sections[1].strip()
+        if "Midterm" in event_name:
+            event_name = "Exam 1"
+        if "Final" in event_name:
+            event_name = "Exam 2"
 
-         print(dates_new[1].strip())
-    # sql_date(dates)
+
+        if "-" in event_date:
+            start_date, end_date = event_date.split("-", maxsplit = 1)
+            start_date, end_date = start_date.strip(), end_date.strip()
+        else:
+            start_date, end_date = event_date.strip(), None
+        
+
+        if "Week" in start_date:
+            start_date = convert_week_to_date(start_date)
+        if end_date and "Week" in end_date:
+            end_date = convert_week_to_date(end_date)
+
+        class_id = get_class_id(class_name)
+        if class_id:
+            sql_date(class_id, event_name, start_date, end_date)
+        else:
+            print(f"Class '{class_name}' not found in database.")
+
+        # print(event_name, start_date, end_date)
+             
+        
+
+    # sql_date(event, date)
     # sql_policy(policy)
     
+
+def convert_week_to_date(text):
+    semester_start = datetime(2025, 1, 21)
+    try:
+        week_num = int(text.replace("Week", "").strip())
+    except ValueError:
+        return None
+
+    calculated_date = semester_start + timedelta(weeks=(week_num - 1))
+    return calculated_date.strftime("%Y-%m-%d")
+
