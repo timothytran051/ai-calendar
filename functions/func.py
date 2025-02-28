@@ -54,9 +54,10 @@ def convert(text, syllabus_text):
         date_sections = date.split(":")
         event_name = date_sections[0].strip()
         event_date = date_sections[1].strip()
-        if "Midterm" in event_name:
+        temp = event_name.lower().strip()
+        if "midterm" in temp:
             event_name = "Exam 1"
-        if "Final" in event_name:
+        if "final" in temp:
             event_name = "Exam 2"
 
 

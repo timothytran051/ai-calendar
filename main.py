@@ -39,7 +39,7 @@ response = ask_ai("\n".join(combined_output))
 print(response)
 
 # date_conversion(combined_output)
-convert(response, combined_output)
+convert(response, "\n".join(combined_output))
 
 # question = input("Calendar: ")
 # response = ask_ai(question)

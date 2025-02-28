@@ -18,7 +18,6 @@ def sql_class(text):
         print(f"Class '{text}' already exists. Skipping insert.")
 
 def sql_date(class_id, event, start, end):
-    # Check if an event with the same name already exists
     c.execute("""
         SELECT start_date, end_date FROM events 
         WHERE class_id = ? AND event_name = ? 
@@ -29,16 +28,15 @@ def sql_date(class_id, event, start, end):
     if existing_event:
         existing_start, existing_end = existing_event
 
-        # Handle None values
+
         existing_start = existing_start if existing_start else start
         existing_end = existing_end if existing_end else end
 
-        # Determine the earliest start date
+
         new_start = min(existing_start, start) if existing_start and start else existing_start or start
-        # Determine the latest end date
+
         new_end = max(existing_end, end) if existing_end and end else existing_end or end
 
-        # Only update if the date range actually changes
         if (new_start, new_end) != (existing_start, existing_end):
             c.execute("""
                 UPDATE events 
@@ -51,7 +49,6 @@ def sql_date(class_id, event, start, end):
             print(f"No change needed for {event}")
 
     else:
-        # Insert a new event if it doesn't already exist
         c.execute("""
             INSERT INTO events (class_id, event_name, start_date, end_date) 
             VALUES (?, ?, ?, ?)
@@ -60,12 +57,16 @@ def sql_date(class_id, event, start, end):
 
     conn.commit()
 
+def sql_policy(text):
+    c.execute("""INSERT INTO policies (drop_type) VALUES (?)""", (text))
+    conn.commit()
+
 def sql_syllabus(class_id, syllabus_text):
     c.execute("""INSERT INTO syllabi (class_id, syllabus_text) VALUES (?, ?)""", (class_id, syllabus_text))
     conn.commit()
 
 def sql_ai(class_id, processed_text):
-    c.execute("""INSERT INTO ai_responses (class_id, extracted_text) VALUES (?, ?)""", (class_id, processed_text))
+    c.execute("""INSERT INTO ai (class_id, extracted_text) VALUES (?, ?)""", (class_id, processed_text))
     conn.commit()
 
 # c.execute("""CREATE TABLE classes(
@@ -118,13 +119,15 @@ def sql_ai(class_id, processed_text):
 #             FOREIGN KEY (class_id) REFERENCES classes (id)
 # )""")
 
-# tables = ["classes", "events"]
-# for table in tables:
-#     print(f"\n--- {table.upper()} TABLE ---")
-#     c.execute(f"SELECT * FROM {table}")
-#     rows = c.fetchall()
-#     for row in rows:
-#         print(row)
+tables = ["classes", "events", "syllabi", "ai"]
+for table in tables:
+    print(f"\n--- {table.upper()} TABLE ---")
+    c.execute(f"SELECT * FROM {table}")
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
 
-# c.execute("DELETE FROM events")
-# conn.commit()
+c.execute("DELETE FROM events")
+conn.commit()
+c.execute("DELETE FROM ai")
+conn.commit()
