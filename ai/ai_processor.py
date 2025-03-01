@@ -45,7 +45,7 @@ Return your response in this structured format:
 "Event Name: FirstDate"  
 
 If an event spans multiple days, return it as:
-"Event Name: FirstDate - SecondDate"
+"Event Name: FirstDate_SecondDate"
 
 If there are no dates, but there is an event, then return it as:
 "Event Name: No Date Found"
@@ -57,6 +57,15 @@ After listing all events, add a new line and return:
 Make sure the class name is always mentioned at the top of the response in the format:
 "Class_Abbreviation Class_Number"
 
+"""
+
+SYSTEM_MESSAGE = """
+You are a helpful AI assistant designed to only handle calendar related tasks.
+You should only respond to queries about events, schedules, availability, and reminders.
+If the user asks for anything unrelated (e.g., jokes, facts, opinions), politely decline.
+
+You will receive user input that will contain calendar related events, such as flights, availability, and reminders.
+Your task is to extract relevant information from the inputs, such as days that are unavailable
 """
 
 def ask_ai(prompt):
@@ -71,3 +80,14 @@ def ask_ai(prompt):
     )
     return response.choices[0].message.content
 
+def user_ai(prompt):
+    response = client.chat.completions.create(
+        messages = [
+            {"role": "system", "content": SYSTEM_MESSAGE},
+            {"role": "user", "content" : prompt},
+        ]
+        model = "gpt-4o",
+        temperature = 1,
+        max_tokens = 4096,
+        top_p = 1
+    )

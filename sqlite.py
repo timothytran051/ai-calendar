@@ -119,15 +119,15 @@ def sql_ai(class_id, processed_text):
 #             FOREIGN KEY (class_id) REFERENCES classes (id)
 # )""")
 
-tables = ["classes", "events", "syllabi", "ai"]
-for table in tables:
-    print(f"\n--- {table.upper()} TABLE ---")
-    c.execute(f"SELECT * FROM {table}")
-    rows = c.fetchall()
-    for row in rows:
-        print(row)
+# tables = ["classes", "events"]
+# for table in tables:
+#     print(f"\n--- {table.upper()} TABLE ---")
+#     c.execute(f"SELECT * FROM {table}")
+#     rows = c.fetchall()
+#     for row in rows:
+#         print(row)
 
-c.execute("DELETE FROM events")
-conn.commit()
-c.execute("DELETE FROM ai")
-conn.commit()
+# c.execute("DELETE FROM events")
+# conn.commit()
+# c.execute("DELETE FROM ai")
+# conn.commit()
