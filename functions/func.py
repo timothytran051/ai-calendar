@@ -1,7 +1,7 @@
 import fitz
 import re
 from datetime import datetime, timedelta
-from sqlite import sql_class, sql_date, get_class_id, sql_syllabus, sql_ai#, sql_policy
+from sqlite import sql_class, sql_date, get_class_id, sql_syllabus, sql_ai, sql_general_events#, sql_policy
 from ai.ai_processor import ask_ai
 
 date_pattern = r"""
@@ -93,33 +93,22 @@ def convert_week_to_date(text):
     calculated_date = semester_start + timedelta(weeks=(week_num - 1))
     return calculated_date.strftime("%Y-%m-%d")
 
-
-
-# fileName = "pdfs/KINE 404 Syllabus SPR25 2025-01-21 - Tagged.pdf"
-# fileName = "pdfs/CoursePolicies264.pdf"
-# fileName = "pdfs/Spring 2025 CS 331 04 23988.pdf"
-fileName = "pdfs/1 CHECKLIST_PHIL 348 (SP2025).pdf"
-
-# print(pdf_text)
-text = extract_text(fileName)
-events_list = extract_events(text)
-policies_list = extract_policies(text)
-
-combined_output = events_list.copy()
-
-
-if policies_list:
-    combined_output.append("\n".join(policies_list))
-else:
-    combined_output.append("No drops found")
-
-# print(combined_output)
-response = ask_ai("\n".join(combined_output))
-print(response)
-
-# date_conversion(combined_output)
-convert(response, "\n".join(combined_output))
-
-# question = input("Calendar: ")
-# response = ask_ai(question)
-# print(response)
+def convert_userinput(text):
+    sections = text.split("\n")
+    task_type = sections[0].strip(' "“”')
+    event = sections[1].split(":")
+    event_name = event[0].strip(' "“”')
+    event_date = event[1].strip(' "“”')
+    temp = task_type.lower().strip()
+    if "create" in temp:
+        if "_" in event_date:
+            start_date, end_date = event_date.split("_", maxsplit = 1)
+            start_date, end_date = start_date.strip(), end_date.strip()
+        else:
+            start_date, end_date = event_date.strip(), None
+            sql_general_events(event_name, start_date, end_date)
+    if "delete" in temp:
+        #search db for event name
+        #if fetchall > 1 then ask for user response
+        #if fetchall = 1 then delete event from db and outlook
+        #if fetchall = 0 then respond no events

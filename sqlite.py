@@ -69,6 +69,11 @@ def sql_ai(class_id, processed_text):
     c.execute("""INSERT INTO ai (class_id, extracted_text) VALUES (?, ?)""", (class_id, processed_text))
     conn.commit()
 
+def sql_general_events(event_name, start, end):
+    c.execute("""INSERT INTO general_events (event_name, start_date, end_date) VALUES (?, ?, ?)""", (event_name, start, end))
+    conn.commit()
+
+
 # c.execute("""CREATE TABLE classes(
 #           id INTEGER PRIMARY KEY,
 #           class_name TEXT UNIQUE
@@ -119,15 +124,24 @@ def sql_ai(class_id, processed_text):
 #             FOREIGN KEY (class_id) REFERENCES classes (id)
 # )""")
 
-# tables = ["classes", "events"]
-# for table in tables:
-#     print(f"\n--- {table.upper()} TABLE ---")
-#     c.execute(f"SELECT * FROM {table}")
-#     rows = c.fetchall()
-#     for row in rows:
-#         print(row)
+# c.execute("""CREATE TABLE general_events(
+#           id INTEGER PRIMARY KEY,
+#           event_name TEXT,
+#           start_date TEXT,
+#           end_date TEXT
+# )""")
+
+tables = ["classes", "events", "general_events"]
+for table in tables:
+    print(f"\n--- {table.upper()} TABLE ---")
+    c.execute(f"SELECT * FROM {table}")
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
 
 # c.execute("DELETE FROM events")
 # conn.commit()
 # c.execute("DELETE FROM ai")
+# conn.commit()
+# c.execute("DELETE FROM general_events")
 # conn.commit()
