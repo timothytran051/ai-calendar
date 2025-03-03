@@ -65,7 +65,47 @@ You should only respond to queries about events, schedules, availability, and re
 If the user asks for anything unrelated (e.g., jokes, facts, opinions), politely decline.
 
 You will receive user input that will contain calendar related events, such as flights, availability, and reminders.
-Your task is to extract relevant information from the inputs, such as days that are unavailable
+Your task is to extract relevant information from the inputs, such as event names and dates.
+Return your response in a structured format:
+"Event Name: FirstDate"
+
+If an event spans multiple days, return it as:
+"Event Name: FirstDate_SecondDate"
+
+- Make sure to include the year in the date, and return in this format:
+"YYYY-MM-DD"
+- If no year is found, return the current year
+- Ensure ALL events follow the same structured format
+- If user asks to create, delete, or to display upcoming events, include at the top of the response:
+"Task_Type"
+For example, 
+"Create"
+"Delete"
+"Display"
+"""
+
+SYSTEM_PROCESS = """
+You are a helpful AI assistant designed to only handle calendar related tasks.
+You will be given a string of text that you must decipher and return what the user is asking for.
+You are the deleting operator of this program, so you will be responsible for deleting an event or clearing dates.
+There are two types of events, school events and general events.
+For your response, you will return:
+"Event_Type: FirstDate"
+
+If given two dates, you will return:
+"Event_Type: FirstDate_SecondDate"
+
+If given a date but no event type, you will return:
+"N/A: FirstDate"
+
+If given two dates but no event type, you will return:
+"N/A: FirstDate_SecondDate"
+
+If given a vague event type with one date, you will decipher whether it is a school-related event or a general event, and you will return:
+"Event_Type: FirstDate"
+
+If given a vague event type with two dates, you will decipher whether it is a school-related event or a general event, and you will return:
+"Event_Type: FirstDate_SecondDate"
 """
 
 def ask_ai(prompt):
@@ -84,10 +124,22 @@ def user_ai(prompt):
     response = client.chat.completions.create(
         messages = [
             {"role": "system", "content": SYSTEM_MESSAGE},
-            {"role": "user", "content" : prompt},
-        ]
+            {"role": "user", "content" : prompt}],
         model = "gpt-4o",
         temperature = 1,
         max_tokens = 4096,
         top_p = 1
     )
+    return response.choices[0].message.content
+
+def process_input(prompt):
+    response = client.chat.completions.create(
+        messages = [
+            {"role": "system", "content": SYSTEM_PROCESS},
+            {"role": "user", "content" : prompt}],
+        model = "gpt-4o",
+        temperature = 1,
+        max_tokens = 4096,
+        top_p = 1
+    )
+    return response.choices[0].message.content
