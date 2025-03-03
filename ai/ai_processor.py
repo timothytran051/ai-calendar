@@ -82,6 +82,7 @@ For example,
 "Create"
 "Delete"
 "Display"
+<<<<<<< HEAD
 """
 
 SYSTEM_PROCESS = """

@@ -108,7 +108,7 @@ def convert_userinput(text):
         else:
             start_date, end_date = event_date.strip(), None
             sql_general_events(event_name, start_date, end_date)
-    # if "delete" in temp:
+    if "delete" in temp:
         #search db for event name
         #if fetchall > 1 then ask for user response
         #if fetchall = 1 then delete event from db and outlook
